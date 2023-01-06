@@ -26,7 +26,9 @@ Versions:
 - [[#heading][Heading]]
 - [[#completion][Completion]]
   - [[#embark][Embark]]
-    - [[#how-to-copy-content-without-category-from-vertico][How to copy content without category from vertico?]]
+    - [[#how-to-copy-content-with-embarkvertico-from-consult-without-category][How to copy content with embark+vertico from consult without category?]]
+- [[#evil][Evil]]
+  - [[#evil-shift-left-evil-shift-right-loses-selection][evil-shift-left evil-shift-right loses selection]]
 :END:
 
 * Completion
@@ -57,6 +59,30 @@ Versions:
   ("w" copy-grep-results-as-kill))
 
 (setf (alist-get 'consult-grep embark-keymap-alist) 'embark-consult-grep-map)
+#+END_SRC
+
+* Evil
+*** evil-shift-left evil-shift-right loses selection
+
+[[https://superuser.com/questions/684540/evil-mode-evil-shift-left-loses-selection][source]]
+
+#+BEGIN_SRC emacs-lisp :results silent
+(define-key evil-visual-state-map (kbd ">") '@evil-shift-right-visual)
+(define-key evil-visual-state-map (kbd "<") '@evil-shift-left-visual)
+(define-key evil-visual-state-map [tab] @evil-shift-right-visual)
+(define-key evil-visual-state-map [S-tab] @evil-shift-left-visual)
+
+(defun @evil-shift-left-visual ()
+  (interactive)
+  (evil-shift-left (region-beginning) (region-end))
+  (evil-normal-state)
+  (evil-visual-restore))
+
+(defun @evil-shift-right-visual ()
+  (interactive)
+  (evil-shift-right (region-beginning) (region-end))
+  (evil-normal-state)
+  (evil-visual-restore))
 #+END_SRC
 
 
