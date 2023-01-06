@@ -1,0 +1,62 @@
+:PROPERTIES:
+:ID: emacs-knowledge-base
+:END:
+
+#+TITLE: Emacs. Knowledge Base.
+#+DESCRIPTION: Description of frequently occurring problems and needs
+#+FILETAGS: :emacs:til:knowledge-base:
+#+STARTUP: show2levels
+#+ID: emacs-knowledge-base
+
+
+This knowledge base describes common problems and their solutions. The repository is open to new pull requests, each of which should include:
+
+Versions:
+- Emacs <emax version>
+- <package> <version>
+<source> (in case it exists)
+
+
+* Heading
+:PROPERTIES:
+:TOC:      :include all
+:END:
+
+:CONTENTS:
+- [[#heading][Heading]]
+- [[#completion][Completion]]
+  - [[#embark][Embark]]
+    - [[#how-to-copy-content-without-category-from-vertico][How to copy content without category from vertico?]]
+:END:
+
+* Completion
+** Embark
+*** How to copy content with embark+vertico from consult without category?
+Versions:
+- Emacs 28.0.50
+- vertico 1.0
+- embark-consult 0.6
+- embark 0.18
+
+[[https://www.reddit.com/r/emacs/comments/zou9x0/comment/j20oo6o/?utm_source=share&utm_medium=web2x&context=3][Source]]
+
+#+BEGIN_SRC emacs-lisp :results silent
+(defun copy-grep-results-as-kill (strings)
+  (embark-copy-as-kill
+   (mapcar (lambda (string)
+             (substring string
+                        (1+ (next-single-property-change
+                             (1+ (next-single-property-change 0 'face string))
+                             'face string))))
+           strings)))
+
+(add-to-list 'embark-multitarget-actions 'copy-grep-results-as-kill)
+
+(embark-define-keymap embark-consult-grep-map
+  "Keymap for actions for consult-grep results."
+  ("w" copy-grep-results-as-kill))
+
+(setf (alist-get 'consult-grep embark-keymap-alist) 'embark-consult-grep-map)
+#+END_SRC
+
+
